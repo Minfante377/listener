@@ -1,4 +1,5 @@
 *.swp
 *.swo
-logs/
+*.pb.go
+logs
 test_logs/

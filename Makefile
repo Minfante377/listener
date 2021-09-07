@@ -6,6 +6,7 @@ LOG_DIR=logs
 
 GOPATH := $(PWD)
 PKGS := $(shell ls src)
+export PATH := $(PATH):$(HOME)/go/bin
 
 RACE_FLAG=""
 ifeq ($(DEBUG),true)
@@ -18,9 +19,11 @@ install:
 	@GOPATH=$(GOPATH) go get -d ./...
 
 build:
+	protoc --go_out=. --go_opt=paths=source_relative src/api/api.proto
 	@GOPATH=$(GOPATH) go build $(LDFLAGS) -o bin/$(PROJECT_NAME) src/main.go
 
 run:
+	protoc --go_out=. --go_opt=paths=source_relative src/api/api.proto
 	@GOPATH=$(GOPATH) go run $(RACE_FLAG) $(LDFLAGS) src/main.go
 
 test:

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package api;
+option go_package = "./src/api;api";
+
+message Event {
+	int32 event_type = 1;
+	string date = 2;
+	string user = 3;
+	string pwd = 4;
+	string cmd = 5;
+	string pid = 6;
+	string notes = 7;
+}
+
+message Empty {}
+
+service Events {
+	rpc NewEvent(Event) returns(Empty);
+}
