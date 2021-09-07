@@ -21,7 +21,10 @@ func write() {
 
 
 func SetLogFile(filepath string, debug string) int {
-	file, err := os.OpenFile(filepath, os.O_APPEND|os.O_CREATE|os.O_WRONLY,
+	os.Mkdir(filepath, 0777)
+	dt := time.Now().Format("01-02-2006")
+	log_name := fmt.Sprintf("%s/%s.log", filepath, dt)
+	file, err := os.OpenFile(log_name, os.O_APPEND|os.O_CREATE|os.O_WRONLY,
 							 0666)
 	if err != nil {
 		return -1
