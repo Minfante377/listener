@@ -2,7 +2,9 @@ package telegram
 
 import (
 	"api"
+	"bytes"
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"logger"
 	"net/http"
@@ -12,8 +14,7 @@ import (
 )
 
 const tag string = "TELEGRAM"
-const sendMsgApi string = "https://api.telegram.org/bot%s/"+
-						  "sendMessage?chat_id=%s&text=%s"
+const sendMsgApi string = "https://api.telegram.org/bot%s/sendMessage?"
 
 var config configuration = configuration{}
 
@@ -69,10 +70,15 @@ func readConfig(path string) (configuration, int) {
 func sendMsg(msg string, user string) {
 	logger.LogInfo(fmt.Sprintf("Sending message %s to user %s", msg, user),
 				   tag)
-	var request string = fmt.Sprintf(sendMsgApi, config.botToken, user, msg)
-	_, err := http.Get(request)
+	var url string = fmt.Sprintf(sendMsgApi, config.botToken)
+	post_body, _ := json.Marshal(map[string]string{
+		"chat_id":  user,
+		"text": msg,
+	})
+	response_body := bytes.NewBuffer(post_body)
+	_, err := http.Post(url, "Application/json", response_body)
 	if err != nil {
-		logger.LogError("Error sending msg", tag)
+		logger.LogError(fmt.Sprintf("Error sending msg: %s", err.Error()), tag)
 	}
 }
 
@@ -86,8 +92,12 @@ func BotHandler(critical_events chan api.Event, config_path string) {
 		event := <-critical_events
 		for _, criticalEvent := range config.criticalEvents {
 			if event.EventType == criticalEvent.eventType {
-				var msg string = fmt.Sprintf("New critical event %d at %s",
-											 event.EventType, event.Date)
+				var msg string = fmt.Sprintf("New critical event %d at %s.\n"+
+											 "User: %s\nPwd: %s\nCmd: %s"+
+											 "\nPid: %s\nNotes: %s",
+											 event.EventType, event.Date,
+									         event.User, event.Pwd, event.Cmd,
+										     event.Pid, event.Notes)
 				for _, user := range criticalEvent.users {
 					sendMsg(msg, user)
 				}
