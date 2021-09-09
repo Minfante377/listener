@@ -1,5 +1,6 @@
 *.swp
 *.swo
 *.pb.go
+*.config
 logs
 test_logs/
