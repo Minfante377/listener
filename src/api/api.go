@@ -20,8 +20,12 @@ type Server struct {
 
 
 func (s *Server) NewEvent(ctx context.Context, in *Event) (*Empty, error) {
-	logger.LogInfo(fmt.Sprintf("[%s] New event %d", in.Date, in.EventType),
-				   tag)
+	var log string = fmt.Sprintf("New event %d at %s.\n"+
+				                 "Host: %s\nUser: %s\nPwd: %s\n"+
+								 "Cmd: %s\nPid: %s\nNotes: %s",
+								 in.EventType, in.Date, in.HostId, in.User,
+								 in.Pwd, in.Cmd, in.Pid, in.Notes)
+	logger.LogInfo(log, tag)
 	s.events <-*in
 	return &Empty{}, nil
 }
