@@ -93,9 +93,10 @@ func BotHandler(critical_events chan api.Event, config_path string) {
 		for _, criticalEvent := range config.criticalEvents {
 			if event.EventType == criticalEvent.eventType {
 				var msg string = fmt.Sprintf("New critical event %d at %s.\n"+
-											 "User: %s\nPwd: %s\nCmd: %s"+
-											 "\nPid: %s\nNotes: %s",
+				                             "Host: %s\nUser: %s\nPwd: %s\n"+
+											 "Cmd: %s\nPid: %s\nNotes: %s",
 											 event.EventType, event.Date,
+											 event.HostId,
 									         event.User, event.Pwd, event.Cmd,
 										     event.Pid, event.Notes)
 				for _, user := range criticalEvent.users {

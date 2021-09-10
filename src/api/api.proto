@@ -11,6 +11,7 @@ message Event {
 	string cmd = 5;
 	string pid = 6;
 	string notes = 7;
+	string host_id = 8;
 }
 
 message Empty {}
